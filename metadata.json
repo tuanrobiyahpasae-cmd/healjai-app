@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: Remix: Remix: Remix: Remix: Remix: ฮีลใจ Healjai",
+  "description": "แอปพลิเคชันพื้นที่ปลอดภัยเพื่อการดูแลตนเองและประเมินสุขภาพจิตของวัยรุ่นและผู้ย้ายถิ่นฐานในพื้นที่มุสลิมภาคใต้ของประเทศไทย",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Enable simple persistence for custom PIN & passkey logs
+    match /logs/{logId} {
+      allow read, write: if true;
+    }
+    // Enable simple persistence for custom PIN & passkey accounts
+    match /accounts/{nickname} {
+      allow read, write: if true;
+    }
+  }
+}

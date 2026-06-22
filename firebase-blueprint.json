@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "MentalHealthLog": {
+      "title": "MentalHealthLog",
+      "description": "บันทึกข้อมูลสุขภาพอารมณ์และผลตรวจคัดกรองจิตวิญญาณฟื้นใจของคุณดี",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ไอดีรูปแบบเฉพาะของบันทึก"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "อีเมลผู้ใช้งานระบบ"
+        },
+        "nickname": {
+          "type": "string",
+          "description": "ชื่อเรียก/ชื่อเล่นของคุณคนดี"
+        },
+        "targetGroup": {
+          "type": "string",
+          "description": "กลุ่มวิสัยทัศน์หรือกลุ่มอายุการทำงานเล่าเรียน"
+        },
+        "gender": {
+          "type": "string",
+          "description": "เพศสภาพ"
+        },
+        "ageRange": {
+          "type": "string",
+          "description": "ช่วงอายุ"
+        },
+        "date": {
+          "type": "string",
+          "description": "วันที่ทำการจัดระเบียน (YYYY-MM-DD)"
+        },
+        "mood": {
+          "type": "string",
+          "enum": ["great", "neutral", "sad", "stressed"],
+          "description": "ระดับความรู้สึกทางอารมณ์ปัจจุบัน"
+        },
+        "journal": {
+          "type": "string",
+          "description": "บันทึกเรียงความ/ไดอารี่ฟื้นฟูจิตใจคอร์เท็กซ์"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "วันเวลาที่ทำการจัดทำจริง"
+        }
+      },
+      "required": ["id", "email", "nickname", "targetGroup", "date", "mood", "timestamp"]
+    },
+    "UserAccount": {
+      "title": "UserAccount",
+      "description": "บัญชีผู้ใช้งานระบบ Healjai บันทึกความปลอดภัย",
+      "type": "object",
+      "properties": {
+        "nickname": {
+          "type": "string",
+          "description": "ชื่อเล่นผู้ใช้ ยูนีคคีย์"
+        },
+        "pin": {
+          "type": "string",
+          "description": "รหัส PIN ตัวเลข 4 หลัก"
+        },
+        "targetGroup": {
+          "type": "string",
+          "description": "กลุ่มเป้าหมาย (student / teenager / worker / unemployed)"
+        },
+        "gender": {
+          "type": "string",
+          "description": "เพศผู้ใช้"
+        },
+        "ageRange": {
+          "type": "string",
+          "description": "ช่วงอายุ"
+        }
+      },
+      "required": ["nickname", "pin", "targetGroup", "gender", "ageRange"]
+    }
+  },
+  "firestore": {
+    "/logs/{logId}": {
+      "schema": "MentalHealthLog",
+      "description": "คอลเลกชันรวมศูนย์บันทึกสุขภาพและจิตวิทยาทางใจ"
+    },
+    "/accounts/{nickname}": {
+      "schema": "UserAccount",
+      "description": "คอลเลกชันบัญชีผู้ใช้ระบบ Healjai เพื่อการเชื่อมต่อและสำรองทางไกล"
+    }
+  }
+}
