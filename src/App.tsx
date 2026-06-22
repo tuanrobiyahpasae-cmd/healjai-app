@@ -89,12 +89,14 @@ export default function App() {
             await appendLogsToSheet(res.accessToken, spreadsheetId, logs);
             showToast('ซิงก์ข้อมูลประวัติสำเร็จค่ะ 📊', 'success', 'ระบบส่งประวัติและข้อมูลส่วนบุคคลทั้งหมดเข้า Spreadsheet เรียบร้อยแล้วค่ะ');
           } catch (syncErr: any) {
-            console.error('[Initial sync error]', syncErr);
             const errStr = String(syncErr.message || syncErr);
             if (errStr.includes('Unauthenticated') || errStr.includes('401') || errStr.includes('credential') || errStr.includes('เซสชัน')) {
+              console.warn('[Initial sync warning] Google session has expired, clearing token:', syncErr.message || syncErr);
               setGoogleUser(null);
               setGoogleToken(null);
               localStorage.removeItem('healjai_google_access_token');
+            } else {
+              console.error('[Initial sync error]', syncErr);
             }
           } finally {
             setIsSyncingSheets(false);
@@ -129,14 +131,15 @@ export default function App() {
       await appendLogsToSheet(googleToken, spreadsheetId, logs);
       showToast('ซิงก์ฐานข้อมูลสำเร็จบริบูรณ์ค่ะ! 🟢', 'success', 'จัดเก็บคอลัมน์และรูปแบบเรียบร้อยใน Google Sheet ของคุณอย่างเป็นระบบระเบียบแล้วค่ะ');
     } catch (err: any) {
-      console.error('Manual sync failure:', err);
       const errStr = String(err.message || err);
       if (errStr.includes('Unauthenticated') || errStr.includes('401') || errStr.includes('credential') || errStr.includes('เซสชัน')) {
+        console.warn('[Manual Sync Warning] Google session has expired:', err.message || err);
         setGoogleUser(null);
         setGoogleToken(null);
         localStorage.removeItem('healjai_google_access_token');
         showToast('เซสชันหมดอายุ', 'warning', 'บัญชี Google ของท่านหมดอายุหรือถูกถอนสิทธิ์แล้วค่ะ กรุณาคลิก "เชื่อมต่อ Google Sheets" ใหม่อีกครั้งเพื่อรีเฟรชสิทธิ์นะคะ');
       } else {
+        console.error('Manual sync failure:', err);
         showToast('การซิงก์ข้อมูลผิดพลาด', 'warning', `ไม่สามารถส่งข้อมูลได้: ${err.message || err}`);
       }
     } finally {
@@ -169,13 +172,16 @@ export default function App() {
         showToast('นำเข้าข้อมูลสำเร็จแล้วค่ะ 📊', 'success', 'ประวัติทั้งหมดเชื่อมโยงกับสเปรดชีตใหม่ของคุณเรียบร้อยแล้วค่ะ');
       }
     } catch (err: any) {
-      console.error('Failed to create new spreadsheet:', err);
-      showToast('ไม่สามารถสร้างสเปรดชีตได้', 'warning', `เกิดข้อผิดพลาด: ${err.message || err}`);
       const errStr = String(err.message || err);
       if (errStr.includes('Unauthenticated') || errStr.includes('401') || errStr.includes('credential') || errStr.includes('เซสชัน')) {
+        console.warn('[Create Sheet Warning] Google session has expired:', err.message || err);
         setGoogleUser(null);
         setGoogleToken(null);
         localStorage.removeItem('healjai_google_access_token');
+        showToast('เซสชันหมดอายุ', 'warning', 'การเชื่อมต่อหมดอายุแล้ว กรุณาเชื่อมต่อบัญชี Google ของท่านอีกครั้งเพื่อดำเนินการต่อค่ะ');
+      } else {
+        console.error('Failed to create new spreadsheet:', err);
+        showToast('ไม่สามารถสร้างสเปรดชีตได้', 'warning', `เกิดข้อผิดพลาด: ${err.message || err}`);
       }
     } finally {
       setIsSyncingSheets(false);
@@ -556,13 +562,15 @@ export default function App() {
           console.log('[Sheets API Sync] Log synced successfully on submission.');
         })
         .catch((sheetErr) => {
-          console.error('[Sheets API Sync] Failed to sync log on submission:', sheetErr);
           const errStr = String(sheetErr.message || sheetErr);
           if (errStr.includes('Unauthenticated') || errStr.includes('401') || errStr.includes('credential') || errStr.includes('เซสชัน')) {
+            console.warn('[Sheets API Sync Warning] Failed to sync log on submission (session expired):', sheetErr.message || sheetErr);
             setGoogleUser(null);
             setGoogleToken(null);
             localStorage.removeItem('healjai_google_access_token');
             showToast('เชื่อมต่อชีตหลักหลุด', 'warning', 'การซิงก์เรียลไทม์ล้มเหลวเนื่องจากเซสชันหมดอายุ กรุณาลงชื่อเข้าใช้ Google ใหม่อีกครั้งนะคะ');
+          } else {
+            console.error('[Sheets API Sync] Failed to sync log on submission:', sheetErr);
           }
         });
     }

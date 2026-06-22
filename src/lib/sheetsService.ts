@@ -503,8 +503,13 @@ export async function appendLogsToSheet(
     }
 
     return true;
-  } catch (error) {
-    console.error('Error in appendLogsToSheet:', error);
+  } catch (error: any) {
+    const errStr = String(error.message || error);
+    if (errStr.includes('Unauthenticated') || errStr.includes('401') || errStr.includes('credential') || errStr.includes('เซสชัน') || errStr.includes('Forbidden') || errStr.includes('403')) {
+      console.warn('[Sheets API Sync] Google session has expired or permissions are missing:', error.message || error);
+    } else {
+      console.error('Error in appendLogsToSheet:', error);
+    }
     throw error;
   }
 }
